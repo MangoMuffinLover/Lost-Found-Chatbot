@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lost & Found Chatbot</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+  <div class="chatbot-wrapper" style="--bot-avatar: url('assets/traceback.png');">
+    <header class="chat-header">
+      <div class="brand">
+        <img class="brand-avatar" src="assets/traceback.png" alt="TraceBack" onerror="this.style.display='none'" />
+        <span class="brand-text">TraceBack — Lost & Found</span>
+      </div>
+    </header>
+
+    <main id="chat" class="chat-window" aria-live="polite" aria-label="Conversation">
+      <!-- Messages inserted here by JS -->
+    </main>
+
+    <form id="chat-form" class="chat-input" autocomplete="off">
+      <input id="chat-input" type="text" placeholder="Type your answer…" aria-label="Your answer" />
+      <button id="chat-send" type="submit" aria-label="Send">Send</button>
+    </form>
+
+    <footer class="chat-footer">
+      <small>TraceBack • Lost & Found Chatbot</small>
+      <div class="footer-status">
+        <small id="conn-status" aria-live="polite"></small>
+        <small id="pending-count" style="display:none"></small>
+        <button id="retry-send" type="button" aria-label="Retry pending">Retry</button>
+        <button id="export-pending" type="button" aria-label="Export pending">Export</button>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="chat.js?v=scott3"></script>
+</body>
+</html>

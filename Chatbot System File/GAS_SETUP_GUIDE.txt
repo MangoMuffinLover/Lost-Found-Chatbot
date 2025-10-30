@@ -1,0 +1,93 @@
+GOOGLE APPS SCRIPT SETUP GUIDE
+=====================================
+
+PROBLEM IDENTIFIED:
+Your Google Apps Script endpoint is returning "Script function not found: doPost"
+This means the doPost function is missing or not properly deployed.
+
+STEP-BY-STEP FIX:
+
+1. OPEN YOUR GOOGLE APPS SCRIPT PROJECT
+   - Go to: https://script.google.com
+   - Open your existing project or create a new one
+
+2. ADD THE DOPOST FUNCTION
+   Replace ALL code in your script with this:
+
+   ```javascript
+   function doPost(e) {
+     try {
+       // Parse the JSON data from the request
+       var data = JSON.parse(e.postData.contents);
+       
+       // Replace 'YOUR_SPREADSHEET_ID' with your actual Google Sheets ID
+       var ss = SpreadsheetApp.openById('YOUR_SPREADSHEET_ID');
+       var sheet = ss.getSheetByName('Responses') || ss.insertSheet('Responses');
+       
+       // Add headers if this is the first row
+       if (sheet.getLastRow() === 0) {
+         sheet.appendRow(['Timestamp', 'Name', 'Item Lost', 'Location', 'Contact', 'Details']);
+       }
+       
+       // Add the data to the sheet
+       sheet.appendRow([
+         new Date(),
+         data.name || '',
+         data.item || '',
+         data.location || '',
+         data.contact || '',
+         data.details || ''
+       ]);
+       
+       // Return success response
+       return ContentService
+         .createTextOutput(JSON.stringify({ status: 'ok' }))
+         .setMimeType(ContentService.MimeType.JSON);
+         
+     } catch (err) {
+       // Return error response
+       return ContentService
+         .createTextOutput(JSON.stringify({ status: 'error', message: String(err) }))
+         .setMimeType(ContentService.MimeType.JSON);
+     }
+   }
+   ```
+
+3. GET YOUR SPREADSHEET ID
+   - Create a new Google Sheet or use existing one
+   - Copy the ID from the URL: https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/edit
+   - Replace 'YOUR_SPREADSHEET_ID' in the code above
+
+4. SAVE THE SCRIPT
+   - Click the save icon (💾) or Ctrl+S
+   - Give your project a name like "Lost & Found Chatbot"
+
+5. DEPLOY AS WEB APP
+   - Click "Deploy" → "New deployment"
+   - Click the gear icon ⚙️ next to "Type"
+   - Select "Web app"
+   - Set these settings:
+     * Execute as: Me (your email)
+     * Who has access: Anyone
+   - Click "Deploy"
+   - Copy the Web app URL (it should end with /exec)
+
+6. UPDATE YOUR CHATBOT
+   - Replace the ENDPOINT in chat.js with your new Web app URL
+   - The URL should look like: https://script.google.com/macros/s/LONG_ID_HERE/exec
+
+7. TEST THE SETUP
+   - Try the chatbot
+   - Check your Google Sheet for new rows
+   - The footer should show "Last response: ok"
+
+TROUBLESHOOTING:
+- If you get "Access Denied": Make sure deployment has "Anyone" access
+- If you get "Script function not found": Make sure you saved the doPost function
+- If data doesn't appear in sheet: Check the spreadsheet ID is correct
+- If you get CORS errors: Make sure you're using POST without Content-Type header
+
+CURRENT ENDPOINT BEING USED:
+https://script.google.com/macros/s/AKfycby__GbxmaESPpmAmZ9Z3-E0WLWgDxt7dPUFAOmzA9HQJ6j3reZIw7aNEuwpkgO_7dll/exec
+
+The chatbot will now show specific error messages to help diagnose issues.
